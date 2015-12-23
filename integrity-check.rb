@@ -15,7 +15,7 @@ raw_counts = {
 
 records.each do |record|
   record_date = Date.parse( record.time_in ).to_s
-  record_id = record.student_id.to_i
+  record_id = record.student_id
   if raw_counts[:by_date][record_date] == nil
     raw_counts[:by_date][record_date] = 0
   end
