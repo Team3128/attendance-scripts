@@ -5,10 +5,10 @@ date_default_timezone_set('America/Los_Angeles');
 echo 'Loading Attendance Records';
 echo "\n";
 
-$data_path = 'data/example_input.csv';
+$data_path = 'data/attendancerecords.csv';
 $summary_path = 'data/example_output.csv';
 
-$file = fopen( $file_path, 'r' );
+$file = fopen( $data_path, 'r' );
 $totals = array();
 do {
   $record = fgetcsv( $file );
@@ -41,7 +41,6 @@ foreach ( $totals as $id => $seconds ) {
 }
 
 asort( $records );
-print_r( $records );
 
 if ( count( $totals) !== count( $raw_student_id) ){
     echo 'WARNING: Student ID collision. Must add more digits.';
