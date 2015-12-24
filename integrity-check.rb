@@ -2,39 +2,32 @@
 # possible problems that could cause bad data
 require_relative 'attendance-api'
 
-file = 'data/attendancerecords_hashed.csv'
-records = AttendanceFile.getRecords( file )
+tests = {
+  true => [],
+  false => [],
+}
 
-stats = AttendanceStats.new( records )
-counts = stats.count_records
+file = 'data/attendancerecords_merged.csv'
+control_records = AttendanceFile.getRecords( file )
 
-puts "Removed #{counts[:empty][:by_student].length} students for no completed check-ins."
-puts "Removed #{counts[:empty][:by_date].length} dates for no completed check-ins."
+control = AttendanceStats.new( control_records )
+control_counts = control.get_overview_stats
 
-data_points = []
-total = 0
-counts[:by_date].each do |date,value|
-  data_points.push( value[:completed] )
-  total = total + value[:completed]
+variable_records = [];
+control_records.each do |record|
+  variable_records.push( record.to_hashed )
 end
-data_points = data_points.sort
-min, max = data_points[0], data_points[-1]
-average = total / data_points.length
-puts "Attendance by Day (for #{counts[:by_date].length} days):"
-puts "Lowest Number of Check Ins: #{min}"
-puts "Highest Number of Check Ins: #{max}"
-puts "Average Number of Check Ins: #{average}"
+variable = AttendanceStats.new ( variable_records )
+variable_counts = variable.get_overview_stats
 
-data_points = []
-total = 0
-counts[:by_student].each do |date,value|
-  data_points.push( value[:completed] )
-  total = total + value[:completed]
+# Check totals
+tests[( variable_counts[:total] == control_counts[:total] )].push( 'Total counts match.')
+tests[( variable_counts[:by_date].length == control_counts[:by_date].length )].push( 'Total dates match.')
+tests[( variable_counts[:by_student].length == control_counts[:by_student].length )].push( 'Total students match.')
+
+tests.each do |key, value|
+  puts "-----#{key}-----"
+  value.each do |message|
+    puts message
+  end
 end
-data_points = data_points.sort
-min, max = data_points[0], data_points[-1]
-average = total / data_points.length
-puts "Attendance by Student (for #{counts[:by_student].length} students):"
-puts "Lowest Number of Check Ins: #{min}"
-puts "Highest Number of Check Ins: #{max}"
-puts "Average Number of Check Ins: #{average}"

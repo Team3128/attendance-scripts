@@ -31,20 +31,28 @@ class AttendanceRecord
     return [ @student_id, @time_in, @time_out ]
   end
 
-  def to_array_hashed()
-    hashed_student_id = Digest::SHA256.hexdigest( @student_id )
-    return [ hashed_student_id[0...10], @time_in, @time_out ]
+  def to_hashed( shorten_length = 4, hash = false )
+
+    identifier = @student_id
+    if shorten_length != false
+      identifier = identifier.split(//).last( shorten_length ).join
+    end
+
+    if hash == true
+      identifier = Digest::SHA256.hexdigest( identifier )[0...10]
+    end
+
+    return AttendanceRecord.new( identifier, @time_in, @time_out )
   end
 end
 
 class AttendanceStats
-  attr_reader :stats
 
   def initialize( records )
     @records = records
   end
 
-  def count_records ()
+  def get_overview_stats ()
 
     counts = {
       :total => {
@@ -103,7 +111,7 @@ class AttendanceStats
       end
     end
 
-    @stats = counts
+    return counts
   end
 
 end
