@@ -1,4 +1,5 @@
 require 'csv'
+require 'digest'
 
 class AttendanceFile
   def self.getRecords( file )
@@ -29,4 +30,10 @@ class AttendanceRecord
   def to_array()
     return [ @student_id, @time_in, @time_out ]
   end
+
+  def to_array_hashed()
+    hashed_student_id = Digest::SHA256.hexdigest( @student_id )
+    return [ hashed_student_id[0...10], @time_in, @time_out ]
+  end
+end
 end
