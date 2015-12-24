@@ -1,5 +1,6 @@
 require 'csv'
 require 'digest'
+require 'date'
 
 class AttendanceFile
   def self.getRecords( file )
@@ -17,6 +18,14 @@ class AttendanceRecord
 
   def initialize( student_id, time_in, time_out = nil )
     @student_id, @time_in, @time_out = student_id, time_in, time_out
+  end
+
+  def get_seconds()
+    if ! is_complete_entry
+      return 0
+    else
+      return ( ( DateTime.parse( @time_out ) - DateTime.parse( @time_in ) ) * 24 * 60 * 60 ).to_i
+    end
   end
 
   def is_complete_entry()
