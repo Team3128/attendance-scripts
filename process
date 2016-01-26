@@ -1,0 +1,29 @@
+#!/bin/bash
+
+newfile="/Users/tylercarter/Repositories/attendance-scripts/data/new_attendance.csv"
+decryptedfile="/Users/tylercarter/Repositories/attendance-scripts/data/output_decrypted.csv"
+mergedfile="/Users/tylercarter/Repositories/attendance-scripts/data/output_merged.csv"
+hashedfile="/Users/tylercarter/Repositories/attendance-scripts/data/output_hashed.csv"
+summaryfile="/Users/tylercarter/Repositories/attendance-scripts/data/output_summary.csv"
+
+# Decrypt last attendance file
+last_output=$(ls -1t /Users/tylercarter/Repositories/attendance-data/private/ | head -1)
+echo "Last file: $last_output. Decrypting..."
+output=`gpg --output $decryptedfile --decrypt /Users/tylercarter/Repositories/attendance-data/private/$last_output`
+
+# Merge into new working file
+ruby /Users/tylercarter/Repositories/attendance-scripts/merge.rb "$decryptedfile" "$newfile"
+
+# Hash merged file
+ruby /Users/tylercarter/Repositories/attendance-scripts/hash.rb "$mergedfile"
+
+# Summarize hashed file
+ruby /Users/tylercarter/Repositories/attendance-scripts/summary.rb "$hashedfile"
+
+date=`date +%m%d%Y`
+# Move summary and has file
+mv "$summaryfile" "/Users/tylercarter/Repositories/attendance-data/${date}summary.csv"
+mv "$hashedfile" "/Users/tylercarter/Repositories/attendance-data/${date}records.csv"
+
+# Encrypt original records
+gpg --output "/Users/tylercarter/Repositories/attendance-data/private/${date}original.csv.gpg" --encrypt --recipient tyler@team3128.org $mergedfile

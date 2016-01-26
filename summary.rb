@@ -1,7 +1,7 @@
 require_relative 'attendance-api'
 
-file = 'data/attendancerecords_hashed.csv'
-output = 'data/attendancerecords_summary.csv'
+file = ARGV.shift
+output = '/Users/tylercarter/Repositories/attendance-scripts/data/output_summary.csv'
 records = AttendanceFile.getRecords( file )
 
 student_time = {}

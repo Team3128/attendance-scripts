@@ -1,8 +1,8 @@
 # Hashes student IDs
 require_relative 'attendance-api'
 
-file = 'data/attendancerecords_merged.csv'
-output = 'data/attendancerecords_hashed.csv'
+file = ARGV[0]
+output = '/Users/tylercarter/Repositories/attendance-scripts/data/output_hashed.csv'
 original_records = AttendanceFile.getRecords( file )
 new_records = []
 

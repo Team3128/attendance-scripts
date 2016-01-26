@@ -2,9 +2,14 @@
 # possible problems that could cause bad data
 require_relative 'attendance-api'
 
-file1 = 'data/attendancerecords.csv'
-file2 = 'data/attendancerecords1.csv'
-output = 'data/attendancerecords_merged.csv'
+file1 = ARGV[0]
+file2 = ARGV[1]
+
+if file1 == nil || file2 == nil
+  abort( "Must provide an original file and merge file.")
+end
+
+output = '/Users/tylercarter/Repositories/attendance-scripts/data/output_merged.csv'
 originalRecords = AttendanceFile.getRecords( file1 )
 mergingRecords = AttendanceFile.getRecords( file2 )
 
