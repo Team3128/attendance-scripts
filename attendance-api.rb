@@ -36,6 +36,22 @@ class AttendanceRecord
     end
   end
 
+  def before_time ( time )
+    if time > @time_in
+      return true
+    else
+      return false
+    end
+  end
+
+  def after_time ( time )
+    if time < @time_in
+      return true
+    else
+      return false
+    end
+  end
+
   def to_array()
     return [ @student_id, @time_in, @time_out ]
   end
