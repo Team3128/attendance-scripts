@@ -4,6 +4,9 @@ file = ARGV.shift
 output = '/Users/tylercarter/Repositories/attendance-scripts/data/output_summary.csv'
 records = AttendanceFile.getRecords( file )
 
+date_start = ARGV.shift || nil
+date_end = ARGV.shift || nil
+
 student_time = {}
 records.each do |record|
 
@@ -16,6 +19,14 @@ records.each do |record|
     student_time[record_id] = 0
   end
 
+  if date_start != nil && ! record.after_time( date_start )
+    next
+  end
+
+  if date_end != nil && ! record.before_time( date_end )
+    next
+  end
+
   student_time[record_id] = student_time[record_id].to_f + record.get_seconds
 end
 
@@ -24,10 +35,6 @@ student_time.each do |key, value|
 end
 
 sorted = student_time.sort_by { |id, time| time }
-sorted.each do |x|
-  puts "ID: #{x[0]}; Time: #{x[1]}"
-end
-
 CSV.open( output, "w" ) do |csv|
   sorted.each do |values|
     csv << values
