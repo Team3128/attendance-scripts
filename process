@@ -5,6 +5,7 @@ decryptedfile="/Users/tylercarter/Repositories/attendance-scripts/data/output_de
 mergedfile="/Users/tylercarter/Repositories/attendance-scripts/data/output_merged.csv"
 hashedfile="/Users/tylercarter/Repositories/attendance-scripts/data/output_hashed.csv"
 summaryfile="/Users/tylercarter/Repositories/attendance-scripts/data/output_summary.csv"
+namefile="/Users/tylercarter/Repositories/attendance-scripts/data/name_map.csv"
 
 # Decrypt last attendance file
 last_output=$(ls -1t /Users/tylercarter/Repositories/attendance-data/private/ | head -1)
@@ -22,8 +23,12 @@ ruby /Users/tylercarter/Repositories/attendance-scripts/summary.rb "$hashedfile"
 
 date=`date +%m%d%Y`
 # Move summary and has file
-mv "$summaryfile" "/Users/tylercarter/Repositories/attendance-data/${date}summary.csv"
-mv "$hashedfile" "/Users/tylercarter/Repositories/attendance-data/${date}records.csv"
+cp "$summaryfile" "/Users/tylercarter/Repositories/attendance-data/${date}summary.csv"
+cp "$hashedfile" "/Users/tylercarter/Repositories/attendance-data/${date}records.csv"
 
 # Encrypt original records
 gpg --output "/Users/tylercarter/Repositories/attendance-data/private/${date}original.csv.gpg" --encrypt --recipient tyler@team3128.org $mergedfile
+
+# Create Build Season Copy
+ruby /Users/tylercarter/Repositories/attendance-scripts/summary.rb "$hashedfile" 2016-01-09 0 "$namefile"
+mv $summaryfile "/Users/tylercarter/Desktop/${date}buildseason.csv"

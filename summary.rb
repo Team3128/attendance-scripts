@@ -7,6 +7,8 @@ records = AttendanceFile.getRecords( file )
 date_start = ARGV.shift || nil
 date_end = ARGV.shift || nil
 
+name_map = ARGV.shift || nil
+
 student_time = {}
 records.each do |record|
 
@@ -19,22 +21,35 @@ records.each do |record|
     student_time[record_id] = 0
   end
 
-  if date_start != nil && ! record.after_time( date_start )
+  if date_start != nil && date_start != "0" && ! record.after_time( date_start )
     next
   end
 
-  if date_end != nil && ! record.before_time( date_end )
+  if date_end != nil && date_end != "0" && ! record.before_time( date_end )
     next
   end
 
   student_time[record_id] = student_time[record_id].to_f + record.get_seconds
 end
 
-student_time.each do |key, value|
-  student_time[key] = ( value / ( 60 * 60 ) ).round(2)
+names = {}
+if name_map != nil
+  CSV.foreach( name_map ) do |row|
+    names[row[0]] = row[1]
+  end
 end
 
-sorted = student_time.sort_by { |id, time| time }
+results = {}
+student_time.each do |key, value|
+  result = ( value / ( 60 * 60 ) ).round(2)
+  if name_map == nil
+    results[key] = result
+  else
+    results["#{names[key]}"] = result
+  end
+end
+
+sorted = results.sort_by { |id, time| time }
 CSV.open( output, "w" ) do |csv|
   sorted.each do |values|
     csv << values
