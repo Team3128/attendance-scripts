@@ -69,6 +69,11 @@ class AttendanceRecord
 
     return AttendanceRecord.new( identifier, @time_in, @time_out )
   end
+
+  def get_time_id
+    return time_id = "#{@time_in}/#{@time_out}"
+  end
+
 end
 
 class AttendanceStats
