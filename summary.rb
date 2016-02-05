@@ -40,12 +40,18 @@ if name_map != nil
 end
 
 results = {}
+if name_map != nil
+  results["<Unlisted>"] = 0
+end
+
 student_time.each do |key, value|
   result = ( value / ( 60 * 60 ) ).round(2)
   if name_map == nil
     results[key] = result
-  else
+  elsif names[key] != nil
     results["#{names[key]}"] = result
+  else
+    results["<Unlisted>"] = results["<Unlisted>"] + result
   end
 end
 
