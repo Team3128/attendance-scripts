@@ -33,7 +33,7 @@ originalRecords.each do |record|
     count[:incomplete] = count[:incomplete] + 1
   end
 
-  attendance[record.student_id].push( record.time_in )
+  attendance[record.student_id].push( record.get_time_id )
 end
 original_students = attendance.length
 puts "Completed/Incomplete/Total Entries: #{count[:completed]} / #{count[:incomplete]} / #{originalRecords.length}; Students: #{attendance.length}"
@@ -55,7 +55,7 @@ mergingRecords.each do |record|
     end
 
   # Student found. Check if time entry exists.
-  elsif ! attendance[record.student_id].include? record.time_in
+  elsif ! attendance[record.student_id].include? record.get_time_id
 
     # No time entry exists. Merge record.
     workingRecords.push( record )
