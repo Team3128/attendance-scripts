@@ -57,6 +57,7 @@ end
 
 sorted = results.sort_by { |id, time| time }
 CSV.open( output, "w" ) do |csv|
+  csv << ["Student ID", "Hours"]
   sorted.each do |values|
     csv << values
   end
