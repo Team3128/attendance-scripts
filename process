@@ -34,4 +34,6 @@ gpg --output "/Users/tylercarter/Repositories/attendance-data/private/${date}ori
 
 # Create Build Season Copy
 ruby /Users/tylercarter/Repositories/attendance-scripts/summary.rb "$hashedfile" 2016-01-09 0 "$namefile"
-mv $summaryfile "/Users/tylercarter/Desktop/${date}buildseason.csv"
+cp $summaryfile "/Users/tylercarter/Desktop/${date}buildseason.csv"
+ruby /Users/tylercarter/Repositories/attendance-scripts/summary.rb "$hashedfile" 2016-01-09 0
+mv $summaryfile "/Users/tylercarter/Repositories/attendance-data/buildseason.csv"
