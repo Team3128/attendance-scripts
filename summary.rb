@@ -9,6 +9,7 @@ date_end = ARGV.shift || nil
 
 name_map = ARGV.shift || nil
 
+total_seconds = 0
 student_time = {}
 records.each do |record|
 
@@ -30,6 +31,7 @@ records.each do |record|
   end
 
   student_time[record_id] = student_time[record_id].to_f + record.get_seconds
+  total_seconds = total_seconds + record.get_seconds
 end
 
 names = {}
@@ -61,4 +63,7 @@ CSV.open( output, "w" ) do |csv|
   sorted.each do |values|
     csv << values
   end
+
+  total_hours = ( total_seconds / ( 60 * 60 ) ).round(2)
+  csv << ["<Total Hours>", total_hours]
 end
