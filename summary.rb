@@ -1,5 +1,7 @@
 require_relative 'attendance-api'
 
+HOURS_THRESHOLD = 1
+
 file = ARGV.shift
 output = '/Users/tylercarter/Repositories/attendance-scripts/data/output_summary.csv'
 records = AttendanceFile.getRecords( file )
@@ -10,6 +12,7 @@ date_end = ARGV.shift || nil
 name_map = ARGV.shift || nil
 
 total_seconds = 0
+unlisted = 0
 student_time = {}
 records.each do |record|
 
@@ -42,19 +45,24 @@ if name_map != nil
 end
 
 results = {}
-if name_map != nil
-  results["<Unlisted>"] = 0
-end
-
 student_time.each do |key, value|
   result = ( value / ( 60 * 60 ) ).round(2)
+  if result < HOURS_THRESHOLD
+    unlisted = unlisted + result
+    next
+  end
+
   if name_map == nil
     results[key] = result
   elsif names[key] != nil
     results["#{names[key]}"] = result
   else
-    results["<Unlisted>"] = results["<Unlisted>"] + result
+    unlisted = unlisted + result
   end
+end
+
+if unlisted != 0
+  results["<Unlisted>"] = unlisted
 end
 
 sorted = results.sort_by { |id, time| time }
