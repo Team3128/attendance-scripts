@@ -51,24 +51,24 @@ student_time.each do |key, value|
     unlisted = unlisted + result
     next
   end
-
-  if name_map == nil
-    results[key] = result
-  elsif names[key] != nil
-    results["#{names[key]}"] = result
-  else
-    unlisted = unlisted + result
-  end
+  results[key] = result
 end
 
 if unlisted != 0
   results["<Unlisted>"] = unlisted
 end
 
+headers = ["Student ID", "Hours"]
+if name_map != nil
+  headers.push("Name")
+end
 sorted = results.sort_by { |id, time| time }
 CSV.open( output, "w" ) do |csv|
-  csv << ["Student ID", "Hours"]
+  csv << headers
   sorted.each do |values|
+    if name_map != nil
+      values.push( names["#{values[0]}"] )
+    end
     csv << values
   end
 
