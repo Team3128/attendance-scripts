@@ -79,6 +79,9 @@ puts "Final Result: #{count[:completed]} Complete check-ins. #{count[:incomplete
 
 CSV.open( output, "w" ) do |csv|
   workingRecords.each do |record|
+    if record.get_seconds < 0
+      puts "Warning: Negative Entry"
+    end
     csv << record.to_array
   end
 end
